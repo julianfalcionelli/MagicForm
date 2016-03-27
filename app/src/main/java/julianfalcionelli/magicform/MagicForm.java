@@ -318,8 +318,9 @@ public class MagicForm
 		}
 	}
 
-	public void setListener(ValidatorCallbacks listener)
+	public MagicForm setListener(ValidatorCallbacks listener)
 	{
 		mListener = listener;
+		return this;
 	}
 }
