@@ -1,4 +1,4 @@
-package julianfalcionelli.magicform;
+package julianfalcionelli.magicform.helper;
 
 import android.support.design.widget.TextInputLayout;
 import android.view.View;

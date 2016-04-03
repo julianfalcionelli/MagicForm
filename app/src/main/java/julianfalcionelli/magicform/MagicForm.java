@@ -8,6 +8,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import julianfalcionelli.magicform.base.FormError;
+import julianfalcionelli.magicform.base.FormField;
+import julianfalcionelli.magicform.base.ValidationMode;
+import julianfalcionelli.magicform.base.ValidatorCallbacks;
+import julianfalcionelli.magicform.helper.ValidationHelper;
+import julianfalcionelli.magicform.validation.Validation;
+
 public class MagicForm
 {
 	private ValidationMode mMode = ValidationMode.ON_VALIDATE;

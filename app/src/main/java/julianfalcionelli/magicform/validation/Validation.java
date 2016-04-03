@@ -1,4 +1,4 @@
-package julianfalcionelli.magicform;
+package julianfalcionelli.magicform.validation;
 
 import android.view.View;
 

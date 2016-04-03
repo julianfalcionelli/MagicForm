@@ -1,4 +1,4 @@
-package julianfalcionelli.magicform;
+package julianfalcionelli.magicform.base;
 
 public enum ValidationMode
 {

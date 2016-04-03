@@ -1,10 +1,12 @@
-package julianfalcionelli.magicform;
+package julianfalcionelli.magicform.base;
 
 import android.app.Activity;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import julianfalcionelli.magicform.validation.Validation;
 
 public class FormField
 {
