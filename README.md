@@ -1,7 +1,7 @@
 MagicForm 
 ===========
 
-Magic Form allows the fast, easy and customizable creation of forms with validations.
+Magic Form allows fast, easy and customizable creation of forms with validations.
 
 Setup
 -----
