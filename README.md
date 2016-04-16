@@ -38,7 +38,7 @@ Otherwise you can call the `isValid()` method.
 
 ### Validation mode
 
-A very important feature is that MagicForum can validate in different ways, by setting one mode to the entire form or to each field.
+A very important feature is that MagicForm can validate in different ways, by setting one mode to the entire form or to each field.
 
 Available modes:
 - ON_VALIDATE: Default mode of the form. The form is validated with the call of `validate()` method.
