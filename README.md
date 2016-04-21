@@ -1,5 +1,6 @@
 MagicForm 
 ===========
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MagicForm-green.svg?style=true)](https://android-arsenal.com/details/1/3461)
 
 Magic Form allows fast, easy and customizable creation of forms with validations.
 
