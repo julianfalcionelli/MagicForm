@@ -3,6 +3,7 @@ package julianfalcionelli.magicform;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import julianfalcionelli.magicform.base.FormError;
 import julianfalcionelli.magicform.base.FormField;
+import julianfalcionelli.magicform.base.FormattedFormField;
 import julianfalcionelli.magicform.base.ValidationMode;
 import julianfalcionelli.magicform.base.ValidatorCallbacks;
 import julianfalcionelli.magicform.helper.ValidationHelper;
@@ -199,13 +201,7 @@ public class MagicForm
 		{
 			mFields.add(formField);
 
-			if (mMode == ValidationMode.ON_VALIDATE && (formField.getMode() == null || formField.getMode() == ValidationMode.ON_VALIDATE))
-			{
-				checkClearErrorMode(formField);
-			} else
-			{
-				initializeFormField(formField, formField.getMode() != null ? formField.getMode() : mMode);
-			}
+			initializeFormField(formField, formField.getMode() != null ? formField.getMode() : mMode);
 		}
 
 		return this;
@@ -224,6 +220,10 @@ public class MagicForm
 	{
 		switch (mode)
 		{
+			case ON_VALIDATE:
+			{
+				setupFormFieldOnValidateMode(formField);
+			}
 			case ON_FOCUS_CHANGE:
 			{
 				setupFormFieldOnFocusChangeMode(formField);
@@ -235,6 +235,11 @@ public class MagicForm
 				break;
 			}
 		}
+	}
+
+	private void setupFormFieldOnValidateMode(final FormField formField)
+	{
+		checkClearErrorMode(formField);
 	}
 
 	private void setupFormFieldOnFocusChangeMode(final FormField formField)
@@ -254,6 +259,45 @@ public class MagicForm
 		});
 
 		checkClearErrorMode(formField);
+	}
+
+	private void setupFormFieldOnContentChangeMode(final FormField formField)
+	{
+		final View view = formField.getView();
+
+		if (view instanceof TextView)
+		{
+			((TextView) view).addTextChangedListener(new TextWatcher()
+			{
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after)
+				{
+
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count)
+				{
+					if (formField.isClearErrorsOnChange())
+					{
+						cleanFieldError(formField);
+					}
+
+					checkFormat(formField);
+
+					if (view.hasFocus())
+					{
+						validateField(formField);
+					}
+				}
+
+				@Override
+				public void afterTextChanged(Editable s)
+				{
+
+				}
+			});
+		}
 	}
 
 	private void checkClearErrorMode(final FormField formField)
@@ -288,40 +332,29 @@ public class MagicForm
 		}
 	}
 
-	private void setupFormFieldOnContentChangeMode(final FormField formField)
+	private void checkFormat(FormField formField)
 	{
-		final View view = formField.getView();
+		View view = formField.getView();
 
-		if (view instanceof TextView)
+		if (formField instanceof FormattedFormField)
 		{
-			((TextView) view).addTextChangedListener(new TextWatcher()
+			String currentViewText = ((TextView)view).getText().toString();
+
+			String currentViewRawText = ((FormattedFormField) formField).getRawValue(currentViewText);
+
+			if (currentViewRawText.length() != ((FormattedFormField) formField).getRawValue().length())
 			{
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count, int after)
+				String formattedValue = ((FormattedFormField) formField).getFormattedValue(currentViewRawText);
+
+				((FormattedFormField) formField).setRawValue(currentViewRawText);
+
+				((TextView)view).setText(formattedValue);
+
+				if (view instanceof EditText)
 				{
-
+					((EditText)view).setSelection(((TextView)view).length());
 				}
-
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count)
-				{
-					if (formField.isClearErrorsOnChange())
-					{
-						cleanFieldError(formField);
-					}
-
-					if (view.hasFocus())
-					{
-						validateField(formField);
-					}
-				}
-
-				@Override
-				public void afterTextChanged(Editable s)
-				{
-
-				}
-			});
+			}
 		}
 	}
 
@@ -330,4 +363,6 @@ public class MagicForm
 		mListener = listener;
 		return this;
 	}
+
+
 }

@@ -76,21 +76,4 @@ public class FormField
 	{
 		mClearErrorsOnChange = clearErrorsOnChange;
 	}
-
-	public void addFormatter(Formatter formatter)
-	{
-		addFormatter(formatter.getRegularExp(), formatter.getReplacement());
-	}
-
-	public void addFormatter(String regularExp, String replacement)
-	{
-		StringBuilder formattedSecurityNumber = new StringBuilder();
-	/*	formattedSecurityNumber.append(String.replaceFirst("(\\d{0,3})(\\d{0,2})(\\d{0,4})", "$1-$2-$3"));
-
-		while (formattedSecurityNumber.length() > 0 && !Character.isDigit(formattedSecurityNumber.charAt(formattedSecurityNumber.length() - 1)))
-		{
-			formattedSecurityNumber.deleteCharAt(formattedSecurityNumber.length() - 1);
-		}
-		return formattedSecurityNumber.toString();*/
-	}
 }
