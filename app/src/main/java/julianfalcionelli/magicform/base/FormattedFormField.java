@@ -47,7 +47,6 @@ public class FormattedFormField extends FormField
 		return mRawValue;
 	}
 
-	//TODO:CHANGE THIS
 	public String getRawValue(String string)
 	{
 		return string.replaceAll("\\D+", "");

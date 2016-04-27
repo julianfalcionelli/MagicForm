@@ -239,7 +239,7 @@ public class MagicForm
 
 	private void setupFormFieldOnValidateMode(final FormField formField)
 	{
-		checkClearErrorMode(formField);
+		setupTextChangeListener(formField, false);
 	}
 
 	private void setupFormFieldOnFocusChangeMode(final FormField formField)
@@ -258,16 +258,25 @@ public class MagicForm
 			}
 		});
 
-		checkClearErrorMode(formField);
+		setupTextChangeListener(formField, false);
 	}
 
 	private void setupFormFieldOnContentChangeMode(final FormField formField)
 	{
-		final View view = formField.getView();
+		setupTextChangeListener(formField, true);
+	}
 
-		if (view instanceof TextView)
+	private void setupTextChangeListener(final FormField formField, final boolean validateOnChange)
+	{
+		final boolean clearErrorsOnChange = formField.isClearErrorsOnChange();
+
+		final boolean hasFormat = formField instanceof FormattedFormField;
+
+		if ((clearErrorsOnChange || hasFormat || validateOnChange) && formField.getView() instanceof TextView)
 		{
-			((TextView) view).addTextChangedListener(new TextWatcher()
+			final TextView view = (TextView) formField.getView();
+
+			view.addTextChangedListener(new TextWatcher()
 			{
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -278,14 +287,17 @@ public class MagicForm
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before, int count)
 				{
-					if (formField.isClearErrorsOnChange())
+					if (clearErrorsOnChange)
 					{
 						cleanFieldError(formField);
 					}
 
-					checkFormat(formField);
+					if (hasFormat)
+					{
+						checkFormat((FormattedFormField) formField);
+					}
 
-					if (view.hasFocus())
+					if (validateOnChange && view.hasFocus())
 					{
 						validateField(formField);
 					}
@@ -300,62 +312,28 @@ public class MagicForm
 		}
 	}
 
-	private void checkClearErrorMode(final FormField formField)
-	{
-		if (formField.isClearErrorsOnChange())
-		{
-			final View view = formField.getView();
-
-			if (view instanceof TextView)
-			{
-				((TextView) view).addTextChangedListener(new TextWatcher()
-				{
-					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after)
-					{
-
-					}
-
-					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count)
-					{
-						cleanFieldError(formField);
-					}
-
-					@Override
-					public void afterTextChanged(Editable s)
-					{
-
-					}
-				});
-			}
-		}
-	}
-
-	private void checkFormat(FormField formField)
+	private void checkFormat(FormattedFormField formField)
 	{
 		View view = formField.getView();
 
-		if (formField instanceof FormattedFormField)
+		String currentViewText = ((TextView) view).getText().toString();
+
+		String currentViewRawText = formField.getRawValue(currentViewText);
+
+		if (currentViewRawText.length() != formField.getRawValue().length())
 		{
-			String currentViewText = ((TextView)view).getText().toString();
+			String formattedValue = formField.getFormattedValue(currentViewRawText);
 
-			String currentViewRawText = ((FormattedFormField) formField).getRawValue(currentViewText);
+			formField.setRawValue(currentViewRawText);
 
-			if (currentViewRawText.length() != ((FormattedFormField) formField).getRawValue().length())
+			((TextView) view).setText(formattedValue);
+
+			if (view instanceof EditText)
 			{
-				String formattedValue = ((FormattedFormField) formField).getFormattedValue(currentViewRawText);
-
-				((FormattedFormField) formField).setRawValue(currentViewRawText);
-
-				((TextView)view).setText(formattedValue);
-
-				if (view instanceof EditText)
-				{
-					((EditText)view).setSelection(((TextView)view).length());
-				}
+				((EditText) view).setSelection(((TextView) view).length());
 			}
 		}
+
 	}
 
 	public MagicForm setListener(ValidatorCallbacks listener)
