@@ -3,6 +3,7 @@ package julianfalcionelli.magicform;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import julianfalcionelli.magicform.base.FormError;
 import julianfalcionelli.magicform.base.FormField;
+import julianfalcionelli.magicform.base.FormattedFormField;
 import julianfalcionelli.magicform.base.ValidationMode;
 import julianfalcionelli.magicform.base.ValidatorCallbacks;
 import julianfalcionelli.magicform.helper.ValidationHelper;
@@ -199,13 +201,7 @@ public class MagicForm
 		{
 			mFields.add(formField);
 
-			if (mMode == ValidationMode.ON_VALIDATE && (formField.getMode() == null || formField.getMode() == ValidationMode.ON_VALIDATE))
-			{
-				checkClearErrorMode(formField);
-			} else
-			{
-				initializeFormField(formField, formField.getMode() != null ? formField.getMode() : mMode);
-			}
+			initializeFormField(formField, formField.getMode() != null ? formField.getMode() : mMode);
 		}
 
 		return this;
@@ -224,6 +220,10 @@ public class MagicForm
 	{
 		switch (mode)
 		{
+			case ON_VALIDATE:
+			{
+				setupFormFieldOnValidateMode(formField);
+			}
 			case ON_FOCUS_CHANGE:
 			{
 				setupFormFieldOnFocusChangeMode(formField);
@@ -235,6 +235,11 @@ public class MagicForm
 				break;
 			}
 		}
+	}
+
+	private void setupFormFieldOnValidateMode(final FormField formField)
+	{
+		setupTextChangeListener(formField, false);
 	}
 
 	private void setupFormFieldOnFocusChangeMode(final FormField formField)
@@ -253,48 +258,25 @@ public class MagicForm
 			}
 		});
 
-		checkClearErrorMode(formField);
-	}
-
-	private void checkClearErrorMode(final FormField formField)
-	{
-		if (formField.isClearErrorsOnChange())
-		{
-			final View view = formField.getView();
-
-			if (view instanceof TextView)
-			{
-				((TextView) view).addTextChangedListener(new TextWatcher()
-				{
-					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after)
-					{
-
-					}
-
-					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count)
-					{
-						cleanFieldError(formField);
-					}
-
-					@Override
-					public void afterTextChanged(Editable s)
-					{
-
-					}
-				});
-			}
-		}
+		setupTextChangeListener(formField, false);
 	}
 
 	private void setupFormFieldOnContentChangeMode(final FormField formField)
 	{
-		final View view = formField.getView();
+		setupTextChangeListener(formField, true);
+	}
 
-		if (view instanceof TextView)
+	private void setupTextChangeListener(final FormField formField, final boolean validateOnChange)
+	{
+		final boolean clearErrorsOnChange = formField.isClearErrorsOnChange();
+
+		final boolean hasFormat = formField instanceof FormattedFormField;
+
+		if ((clearErrorsOnChange || hasFormat || validateOnChange) && formField.getView() instanceof TextView)
 		{
-			((TextView) view).addTextChangedListener(new TextWatcher()
+			final TextView view = (TextView) formField.getView();
+
+			view.addTextChangedListener(new TextWatcher()
 			{
 				@Override
 				public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -305,12 +287,17 @@ public class MagicForm
 				@Override
 				public void onTextChanged(CharSequence s, int start, int before, int count)
 				{
-					if (formField.isClearErrorsOnChange())
+					if (clearErrorsOnChange)
 					{
 						cleanFieldError(formField);
 					}
 
-					if (view.hasFocus())
+					if (hasFormat)
+					{
+						checkFormat((FormattedFormField) formField);
+					}
+
+					if (validateOnChange && view.hasFocus())
 					{
 						validateField(formField);
 					}
@@ -325,9 +312,35 @@ public class MagicForm
 		}
 	}
 
+	private void checkFormat(FormattedFormField formField)
+	{
+		View view = formField.getView();
+
+		String currentViewText = ((TextView) view).getText().toString();
+
+		String currentViewRawText = formField.getRawValue(currentViewText);
+
+		if (currentViewRawText.length() != formField.getRawValue().length())
+		{
+			String formattedValue = formField.getFormattedValue(currentViewRawText);
+
+			formField.setRawValue(currentViewRawText);
+
+			((TextView) view).setText(formattedValue);
+
+			if (view instanceof EditText)
+			{
+				((EditText) view).setSelection(((TextView) view).length());
+			}
+		}
+
+	}
+
 	public MagicForm setListener(ValidatorCallbacks listener)
 	{
 		mListener = listener;
 		return this;
 	}
+
+
 }
