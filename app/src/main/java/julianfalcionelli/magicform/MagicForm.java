@@ -223,6 +223,7 @@ public class MagicForm
 			case ON_VALIDATE:
 			{
 				setupFormFieldOnValidateMode(formField);
+				break;
 			}
 			case ON_FOCUS_CHANGE:
 			{
