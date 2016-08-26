@@ -6,14 +6,10 @@ Magic Form allows fast, easy and customisable creation of forms with validations
 
 Setup
 -----
-### Add MagicForm as a Module
-Download the project and include in your project as a module.
-
-Make sure that the `build.gradle` of your application has the module depency
 
 ```groovy
 dependencies {
-    compile project(":magicform")
+    compile 'julianfalcionelli:MagicForm:1.0'
 }
 ```
 
