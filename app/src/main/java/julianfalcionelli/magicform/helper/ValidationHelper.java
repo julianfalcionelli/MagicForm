@@ -29,6 +29,7 @@ public class ValidationHelper
 	{
 		try
 		{
+			((TextInputLayout) editText.getParent()).setError(null);
 			((TextInputLayout) editText.getParent()).setErrorEnabled(false);
 		} catch (ClassCastException e)
 		{
@@ -55,6 +56,7 @@ public class ValidationHelper
 	{
 		try
 		{
+			((TextInputLayout) editText.getParent()).setErrorEnabled(true);
 			((TextInputLayout) editText.getParent()).setError(error);
 		} catch (ClassCastException e)
 		{
