@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+def RELEASE_VERSION = "1.0"
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -8,7 +10,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName RELEASE_VERSION
     }
     buildTypes {
         release {
@@ -24,3 +26,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'julianfalcionelli'
+    PUBLISH_ARTIFACT_ID = 'MagicForm'
+    PUBLISH_VERSION = RELEASE_VERSION
+}
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
