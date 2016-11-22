@@ -1,7 +1,10 @@
 package julianfalcionelli.magicform.helper;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,11 +30,14 @@ public class ValidationHelper
 
 	private static void cleanError(EditText editText)
 	{
-		try
+		TextInputLayout textInputLayout = getTextInputLayout(editText);
+
+		if (textInputLayout != null)
 		{
-			((TextInputLayout) editText.getParent()).setError(null);
-			((TextInputLayout) editText.getParent()).setErrorEnabled(false);
-		} catch (ClassCastException e)
+			textInputLayout.setError(null);
+			textInputLayout.setErrorEnabled(false);
+		}
+		else
 		{
 			editText.setError(null);
 		}
@@ -54,13 +60,38 @@ public class ValidationHelper
 
 	private static void setError(EditText editText, String error)
 	{
-		try
+		TextInputLayout textInputLayout = getTextInputLayout(editText);
+
+		if (textInputLayout != null)
 		{
-			((TextInputLayout) editText.getParent()).setErrorEnabled(true);
-			((TextInputLayout) editText.getParent()).setError(error);
-		} catch (ClassCastException e)
+			textInputLayout.setErrorEnabled(true);
+			textInputLayout.setError(error);
+		}
+		else
 		{
 			editText.setError(error);
 		}
+	}
+
+	@Nullable
+	private static TextInputLayout getTextInputLayout(@NonNull EditText editText)
+	{
+		View currentView = editText;
+
+		for (int i = 0; i < 2; i++)
+		{
+			ViewParent parent = currentView.getParent();
+
+			if (parent instanceof TextInputLayout)
+			{
+				return (TextInputLayout) parent;
+			}
+			else
+			{
+				currentView = (View) parent;
+			}
+		}
+
+		return null;
 	}
 }
