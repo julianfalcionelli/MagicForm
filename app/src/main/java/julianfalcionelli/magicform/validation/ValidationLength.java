@@ -1,9 +1,8 @@
 package julianfalcionelli.magicform.validation;
 
-import android.view.View;
 import android.widget.TextView;
 
-public class ValidationLength extends Validation
+public class ValidationLength extends Validation<TextView>
 {
 	private Integer mMin, mMax;
 
@@ -14,8 +13,8 @@ public class ValidationLength extends Validation
 	}
 
 	@Override
-	public boolean isValid(View view)
+	public boolean isValid(TextView view)
 	{
-		return (mMin == null || mMin <= ((TextView) view).length()) && (mMax == null || mMax >= ((TextView) view).length());
+		return (mMin == null || mMin <= view.length()) && (mMax == null || mMax >= view.length());
 	}
 }

@@ -1,11 +1,10 @@
 package julianfalcionelli.magicform.validation;
 
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.regex.Pattern;
 
-public class ValidationRegex extends Validation
+public class ValidationRegex extends Validation<TextView>
 {
 	private Pattern mPattern;
 
@@ -15,8 +14,8 @@ public class ValidationRegex extends Validation
 	}
 
 	@Override
-	public boolean isValid(View view)
+	public boolean isValid(TextView view)
 	{
-		return mPattern.matcher(((TextView) view).getText()).matches();
+		return mPattern.matcher(view.getText()).matches();
 	}
 }
