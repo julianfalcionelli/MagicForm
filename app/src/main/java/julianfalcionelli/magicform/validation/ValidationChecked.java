@@ -1,9 +1,8 @@
 package julianfalcionelli.magicform.validation;
 
-import android.view.View;
 import android.widget.CompoundButton;
 
-public class ValidationChecked extends Validation
+public class ValidationChecked extends Validation<CompoundButton>
 {
 	private boolean mChecked;
 
@@ -13,8 +12,8 @@ public class ValidationChecked extends Validation
 	}
 
 	@Override
-	public boolean isValid(View view)
+	public boolean isValid(CompoundButton view)
 	{
-		return ((CompoundButton) view).isChecked() == mChecked;
+		return view.isChecked() == mChecked;
 	}
 }
