@@ -9,7 +9,7 @@ Setup
 
 ```groovy
 dependencies {
-    compile 'julianfalcionelli:MagicForm:1.2'
+    compile 'julianfalcionelli:MagicForm:1.3'
 }
 ```
 
@@ -65,12 +65,12 @@ MagicForm mMagicForm = new MagicForm(ValidationMode.ON_CONTENT_CHANGE)
 						.addValidation(new ValidationNotEmpty().setMessage("Required Field"))
 						.addValidation(new ValidationLength(2, 4)))
 				.addField(new FormField(this, R.id.fieldEditText)
-						.addValidation(new Validation()
+						.addValidation(new Validation<EditText>()
 						{
 							@Override
-							public boolean isValid(View view)
+							public boolean isValid(EditText view)
 							{
-								return ((EditText) view).getText().equals("something");
+								return view.getText().equals("something");
 							}
 						}.setMessage("Invalid field!!!")))
 				.addField(new FormField(mCheckBox)
