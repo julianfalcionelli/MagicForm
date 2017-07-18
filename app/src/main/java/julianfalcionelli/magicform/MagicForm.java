@@ -27,7 +27,8 @@ public class MagicForm
 	private ValidatorCallbacks mListener;
 
 	/*
-	 Esta variable indica si se debe continuar con todos las validaciones de un campo, aun cuando ya se haya comprobado que ya tiene un error.
+	 Esta variable indica si se debe continuar con todos las validaciones de un campo, aun cuando ya
+	 se haya comprobado que ya tiene un error.
 	 */
 	private boolean mDeepValidation = false;
 
@@ -80,9 +81,7 @@ public class MagicForm
 
 	private void validateField(FormField formField)
 	{
-		List<FormError> errors = new ArrayList<>();
-
-		errors.addAll(checkField(formField));
+		List<FormError> errors = checkField(formField);
 
 		if (errors.isEmpty())
 		{
@@ -126,7 +125,17 @@ public class MagicForm
 		}
 	}
 
-	private List<FormError> checkField(FormField formField)
+	private boolean isFieldValid(FormField formField)
+    {
+        return checkField(formField, false).isEmpty();
+    }
+
+    private List<FormError> checkField(FormField formField)
+    {
+        return checkField(formField, true);
+    }
+
+	private List<FormError> checkField(FormField formField, boolean setErrorInView)
 	{
 		List<FormError> errors = new ArrayList<>();
 
@@ -154,7 +163,7 @@ public class MagicForm
 			}
 		}
 
-		if (firstError != null)
+		if (firstError != null && setErrorInView)
 		{
 			ValidationHelper.setError(view, firstError.getMessage());
 		} else
@@ -190,9 +199,11 @@ public class MagicForm
 		mDeepValidation = deepValidation;
 	}
 
-	public void setMode(ValidationMode mode)
+	public MagicForm setMode(ValidationMode mode)
 	{
 		mMode = mode;
+
+        return this;
 	}
 
 	public MagicForm addField(FormField formField)
@@ -246,6 +257,11 @@ public class MagicForm
 	private void setupFormFieldOnFocusChangeMode(final FormField formField)
 	{
 		final View view = formField.getView();
+
+        if (isFieldValid(formField))
+        {
+            addValidField(formField);
+        }
 
 		view.setOnFocusChangeListener(new View.OnFocusChangeListener()
 		{
@@ -342,6 +358,5 @@ public class MagicForm
 		mListener = listener;
 		return this;
 	}
-
 
 }
