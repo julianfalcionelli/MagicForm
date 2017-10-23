@@ -42,7 +42,7 @@ public class MagicForm
 		mMode = mode;
 	}
 
-	public void validate()
+	public boolean validate()
 	{
 		List<FormError> errors = new ArrayList<>();
 
@@ -54,9 +54,11 @@ public class MagicForm
 		if (errors.isEmpty())
 		{
 			onSuccess();
+			return true;
 		} else
 		{
 			onFailed(errors);
+			return false;
 		}
 	}
 
