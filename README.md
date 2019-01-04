@@ -9,7 +9,7 @@ Setup
 
 ```groovy
 dependencies {
-    compile 'julianfalcionelli:MagicForm:1.4.1'
+    implementation 'julianfalcionelli:MagicForm:1.5'
 }
 ```
 
