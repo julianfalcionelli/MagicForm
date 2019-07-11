@@ -22,10 +22,18 @@ Example:
 
 ```java
 MagicForm mMagicForm = new MagicForm()
-				.addField(new FormField(mEmailEditText)
-						.addValidation(new ValidationRegex(Patterns.EMAIL_ADDRESS).setMessage("invalid email")))
-				.addField(new FormField(mPasswordEditText)
-						.addValidation(new ValidationNotEmpty().setMessage("Required Field")))
+				.addField(
+					new FormField(mEmailEditText)
+						.addValidation(
+							new ValidationRegex(Patterns.EMAIL_ADDRESS)
+								.setMessage("invalid email"))
+				)
+				.addField(
+					new FormField(mPasswordEditText)
+						.addValidation(
+							new ValidationNotEmpty()
+								.setMessage("Required Field"))
+				)
 				.setListener(this);
 ```
 
@@ -59,35 +67,46 @@ If you want to reuse validations on various parts of your application we suggest
 
 ```java
 MagicForm mMagicForm = new MagicForm(ValidationMode.ON_CONTENT_CHANGE)
-				.addField(new FormField(mEmailEditText)
-						.addValidation(new ValidationRegex(Patterns.EMAIL_ADDRESS).setMessage("invalid email")))
-				.addField(new FormField(mPasswordEditText)
-						.addValidation(new ValidationNotEmpty().setMessage("Required Field"))
-						.addValidation(new ValidationLength(2, 4)))
-				.addField(new FormField(this, R.id.fieldEditText)
-						.addValidation(new Validation<EditText>()
-						{
-							@Override
-							public boolean isValid(EditText view)
-							{
-								return view.getText().equals("something");
-							}
-						}.setMessage("Invalid field!!!")))
-				.addField(new FormField(mCheckBox)
-						.addValidation(new ValidationChecked(true)))
-				.setListener(new ValidatorCallbacks()
-				{
-					@Override
-					public void onSuccess()
-					{
-						Log.i("MagicForm", "Valid!");
-					}
+				.addField(
+					new FormField(mEmailEditText)
+						.addValidation(
+							new ValidationRegex(Patterns.EMAIL_ADDRESS)
+								.setMessage("invalid email"))
+				)
+				.addField(
+					new FormField(mPasswordEditText)
+						.addValidation(
+							new ValidationNotEmpty()
+								.setMessage("Required Field"))
+						.addValidation(
+							new ValidationLength(2, 4))
+				)
+				.addField(
+					new FormField(this, R.id.fieldEditText)
+						.addValidation(
+							new Validation<EditText>() {
+								@Override
+								public boolean isValid(EditText view) {
+									return view.getText().equals("something");
+								}
+						}.setMessage("Invalid field!!!"))
+				)
+				.addField(
+					new FormField(mCheckBox)
+						.addValidation(
+							new ValidationChecked(true))
+				)
+				.setListener(
+					new ValidatorCallbacks() {
+						@Override
+						public void onSuccess() {
+							Log.i("MagicForm", "Valid!");
+						}
 
-					@Override
-					public void onFailed(List<FormError> errors)
-					{
-						Log.i("MagicForm", "Invalid!");
-					}
+						@Override
+						public void onFailed(List<FormError> errors) {
+							Log.i("MagicForm", "Invalid!");
+						}
 				});
 ```
 
