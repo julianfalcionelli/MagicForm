@@ -1,15 +1,40 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.vanniktech.maven.publish'
 
-def RELEASE_VERSION = "1.5"
+def properties = new Properties()
+properties.load(new FileInputStream(rootProject.file("gradle.properties")))
+
+// Load Local Properties
+File secretPropsFile = project.rootProject.file('local.properties')
+Properties p = new Properties()
+new FileInputStream(secretPropsFile).withCloseable { is ->
+    p.load(is)
+}
+p.each { name, value ->
+    ext[name] = value
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "sonatype"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+}
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 7
-        versionName RELEASE_VERSION
+        versionName properties['VERSION_NAME']
     }
     buildTypes {
         release {
@@ -21,15 +46,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
-    implementation 'com.google.android.material:material:1.1.0-alpha02'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.appcompat:appcompat:1.3.0-rc01'
+    implementation 'com.google.android.material:material:1.4.0-alpha02'
 }
-
-ext {
-    PUBLISH_GROUP_ID = 'julianfalcionelli'
-    PUBLISH_ARTIFACT_ID = 'MagicForm'
-    PUBLISH_VERSION = RELEASE_VERSION
-}
-
-apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

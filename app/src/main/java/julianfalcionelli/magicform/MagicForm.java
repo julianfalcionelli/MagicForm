@@ -17,348 +17,287 @@ import julianfalcionelli.magicform.base.ValidatorCallbacks;
 import julianfalcionelli.magicform.helper.ValidationHelper;
 import julianfalcionelli.magicform.validation.Validation;
 
-public class MagicForm
-{
-	private ValidationMode mMode = ValidationMode.ON_VALIDATE;
+public class MagicForm {
+    private ValidationMode mMode = ValidationMode.ON_VALIDATE;
 
-	private List<FormField> mFields = new ArrayList<>();
-	private List<FormField> mValidFields = new ArrayList<>();
+    private List<FormField> mFields = new ArrayList<>();
+    private List<FormField> mValidFields = new ArrayList<>();
 
-	private ValidatorCallbacks mListener;
+    private ValidatorCallbacks mListener;
 
-	/*
-	 Esta variable indica si se debe continuar con todos las validaciones de un campo, aun cuando ya
-	 se haya comprobado que ya tiene un error.
-	 */
-	private boolean mDeepValidation = false;
+    /**
+     * This variable indicates whether to continue with all the validations of a field,
+     * even if it has already been verified that it already has an error.
+     */
+    private boolean mDeepValidation = false;
 
-	public MagicForm()
-	{
+    public MagicForm() {
 
-	}
+    }
 
-	public MagicForm(ValidationMode mode)
-	{
-		mMode = mode;
-	}
+    public MagicForm(ValidationMode mode) {
+        mMode = mode;
+    }
 
-	public boolean validate()
-	{
-		List<FormError> errors = new ArrayList<>();
+    public boolean validate() {
+        List<FormError> errors = new ArrayList<>();
 
-		for (FormField formField : mFields)
-		{
-			errors.addAll(checkField(formField));
-		}
+        for (FormField formField : mFields) {
+            errors.addAll(checkField(formField));
+        }
 
-		if (errors.isEmpty())
-		{
-			onSuccess();
-			return true;
-		} else
-		{
-			onFailed(errors);
-			return false;
-		}
-	}
+        if (errors.isEmpty()) {
+            onSuccess();
+            return true;
+        } else {
+            onFailed(errors);
+            return false;
+        }
+    }
 
-	private void onSuccess()
-	{
-		if (mListener != null)
-		{
-			mListener.onSuccess();
-		}
-	}
+    private void onSuccess() {
+        if (mListener != null) {
+            mListener.onSuccess();
+        }
+    }
 
-	private void onFailed(List<FormError> errors)
-	{
-		if (mListener != null)
-		{
-			mListener.onFailed(errors);
-		}
-	}
+    private void onFailed(List<FormError> errors) {
+        if (mListener != null) {
+            mListener.onFailed(errors);
+        }
+    }
 
 
-	List<FormError> mErrors = new ArrayList<>();
+    List<FormError> mErrors = new ArrayList<>();
 
-	private void validateField(FormField formField)
-	{
-		List<FormError> errors = checkField(formField);
+    private void validateField(FormField formField) {
+        List<FormError> errors = checkField(formField);
 
-		if (errors.isEmpty())
-		{
-			addValidField(formField);
-		} else
-		{
-			mErrors.addAll(errors);
+        if (errors.isEmpty()) {
+            addValidField(formField);
+        } else {
+            mErrors.addAll(errors);
 
-			removeValidField(formField);
-		}
-	}
+            removeValidField(formField);
+        }
+    }
 
-	private void addValidField(FormField formField)
-	{
-		if (!mValidFields.contains(formField))
-		{
-			mValidFields.add(formField);
-		}
+    private void addValidField(FormField formField) {
+        if (!mValidFields.contains(formField)) {
+            mValidFields.add(formField);
+        }
 
-		checkFormStatus();
-	}
+        checkFormStatus();
+    }
 
-	private void removeValidField(FormField formField)
-	{
-		if (mValidFields.contains(formField))
-		{
-			mValidFields.remove(formField);
-		}
+    private void removeValidField(FormField formField) {
+        if (mValidFields.contains(formField)) {
+            mValidFields.remove(formField);
+        }
 
-		checkFormStatus();
-	}
+        checkFormStatus();
+    }
 
-	private void checkFormStatus()
-	{
-		if (mFields.size() == mValidFields.size())
-		{
-			onSuccess();
-		} else
-		{
-			onFailed(mErrors);
-		}
-	}
+    private void checkFormStatus() {
+        if (mFields.size() == mValidFields.size()) {
+            onSuccess();
+        } else {
+            onFailed(mErrors);
+        }
+    }
 
-	private boolean isFieldValid(FormField formField)
-    {
+    private boolean isFieldValid(FormField formField) {
         return checkField(formField, false).isEmpty();
     }
 
-    private List<FormError> checkField(FormField formField)
-    {
+    private List<FormError> checkField(FormField formField) {
         return checkField(formField, true);
     }
 
-	private List<FormError> checkField(FormField formField, boolean setErrorInView)
-	{
-		List<FormError> errors = new ArrayList<>();
+    private List<FormError> checkField(FormField formField, boolean setErrorInView) {
+        List<FormError> errors = new ArrayList<>();
 
-		View view = formField.getView();
+        View view = formField.getView();
 
-		FormError firstError = null;
+        FormError firstError = null;
 
-		for (Validation validation : formField.getValidations())
-		{
-			if (!validation.isValid(view))
-			{
-				FormError formError = new FormError(view, validation.getMessage());
+        for (Validation validation : formField.getValidations()) {
+            if (!validation.isValid(view)) {
+                FormError formError = new FormError(view, validation.getMessage());
 
-				errors.add(formError);
+                errors.add(formError);
 
-				if (firstError == null)
-				{
-					firstError = formError;
-				}
+                if (firstError == null) {
+                    firstError = formError;
+                }
 
-				if (!mDeepValidation)
-				{
-					break;
-				}
-			}
-		}
+                if (!mDeepValidation) {
+                    break;
+                }
+            }
+        }
 
-		if (firstError != null && setErrorInView)
-		{
-			ValidationHelper.setError(view, firstError.getMessage());
-		} else
-		{
-			cleanFieldError(formField);
-		}
+        if (firstError != null && setErrorInView) {
+            ValidationHelper.setError(view, firstError.getMessage());
+        } else {
+            cleanFieldError(formField);
+        }
 
-		return errors;
-	}
+        return errors;
+    }
 
-	private void cleanFieldError(FormField formField)
-	{
-		View view = formField.getView();
+    private void cleanFieldError(FormField formField) {
+        View view = formField.getView();
 
-		ValidationHelper.cleanError(view);
+        ValidationHelper.cleanError(view);
 
-		List<FormError> newErrors = new ArrayList<>();
+        List<FormError> newErrors = new ArrayList<>();
 
-		for (FormError formError : mErrors)
-		{
-			if (formError.getView().getId() != view.getId())
-			{
-				newErrors.add(formError);
-			}
-		}
+        for (FormError formError : mErrors) {
+            if (formError.getView().getId() != view.getId()) {
+                newErrors.add(formError);
+            }
+        }
 
-		mErrors.clear();
-		mErrors.addAll(newErrors);
-	}
+        mErrors.clear();
+        mErrors.addAll(newErrors);
+    }
 
-	public void setDeepValidation(boolean deepValidation)
-	{
-		mDeepValidation = deepValidation;
-	}
+    public void setDeepValidation(boolean deepValidation) {
+        mDeepValidation = deepValidation;
+    }
 
-	public MagicForm setMode(ValidationMode mode)
-	{
-		mMode = mode;
+    public MagicForm setMode(ValidationMode mode) {
+        mMode = mode;
 
         return this;
-	}
+    }
 
-	public MagicForm addField(FormField formField)
-	{
-		if (!mFields.contains(formField))
-		{
-			mFields.add(formField);
+    public MagicForm addField(FormField formField) {
+        if (!mFields.contains(formField)) {
+            mFields.add(formField);
 
-			initializeFormField(formField, formField.getMode() != null ? formField.getMode() : mMode);
-		}
+            initializeFormField(formField,
+                    formField.getMode() != null ? formField.getMode() : mMode);
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	public void removeField(FormField formField)
-	{
-		if (mFields.contains(formField))
-		{
-			mFields.remove(formField);
-			mValidFields.remove(formField);
-		}
-	}
+    public void removeField(FormField formField) {
+        if (mFields.contains(formField)) {
+            mFields.remove(formField);
+            mValidFields.remove(formField);
+        }
+    }
 
-	private void initializeFormField(FormField formField, ValidationMode mode)
-	{
-		switch (mode)
-		{
-			case ON_VALIDATE:
-			{
-				setupFormFieldOnValidateMode(formField);
-				break;
-			}
-			case ON_FOCUS_CHANGE:
-			{
-				setupFormFieldOnFocusChangeMode(formField);
-				break;
-			}
-			case ON_CONTENT_CHANGE:
-			{
-				setupFormFieldOnContentChangeMode(formField);
-				break;
-			}
-		}
-	}
+    private void initializeFormField(FormField formField, ValidationMode mode) {
+        switch (mode) {
+            case ON_VALIDATE: {
+                setupFormFieldOnValidateMode(formField);
+                break;
+            }
+            case ON_FOCUS_CHANGE: {
+                setupFormFieldOnFocusChangeMode(formField);
+                break;
+            }
+            case ON_CONTENT_CHANGE: {
+                setupFormFieldOnContentChangeMode(formField);
+                break;
+            }
+        }
+    }
 
-	private void setupFormFieldOnValidateMode(final FormField formField)
-	{
-		setupTextChangeListener(formField, false);
-	}
+    private void setupFormFieldOnValidateMode(final FormField formField) {
+        setupTextChangeListener(formField, false);
+    }
 
-	private void setupFormFieldOnFocusChangeMode(final FormField formField)
-	{
-		final View view = formField.getView();
+    private void setupFormFieldOnFocusChangeMode(final FormField formField) {
+        final View view = formField.getView();
 
-        if (isFieldValid(formField))
-        {
+        if (isFieldValid(formField)) {
             addValidField(formField);
         }
 
-		view.setOnFocusChangeListener(new View.OnFocusChangeListener()
-		{
-			@Override
-			public void onFocusChange(View v, boolean hasFocus)
-			{
-				if (!hasFocus)
-				{
-					validateField(formField);
-				}
-			}
-		});
+        view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateField(formField);
+                }
+            }
+        });
 
-		setupTextChangeListener(formField, false);
-	}
+        setupTextChangeListener(formField, false);
+    }
 
-	private void setupFormFieldOnContentChangeMode(final FormField formField)
-	{
-		setupTextChangeListener(formField, true);
-	}
+    private void setupFormFieldOnContentChangeMode(final FormField formField) {
+        setupTextChangeListener(formField, true);
+    }
 
-	private void setupTextChangeListener(final FormField formField, final boolean validateOnChange)
-	{
-		final boolean clearErrorsOnChange = formField.isClearErrorsOnChange();
+    private void setupTextChangeListener(final FormField formField,
+            final boolean validateOnChange) {
+        final boolean clearErrorsOnChange = formField.isClearErrorsOnChange();
 
-		final boolean hasFormat = formField instanceof FormattedFormField;
+        final boolean hasFormat = formField instanceof FormattedFormField;
 
-		if ((clearErrorsOnChange || hasFormat || validateOnChange) && formField.getView() instanceof TextView)
-		{
-			final TextView view = (TextView) formField.getView();
+        if ((clearErrorsOnChange || hasFormat || validateOnChange)
+                && formField.getView() instanceof TextView) {
+            final TextView view = (TextView) formField.getView();
 
-			view.addTextChangedListener(new TextWatcher()
-			{
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count, int after)
-				{
+            view.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-				}
+                }
 
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count)
-				{
-					if (clearErrorsOnChange)
-					{
-						cleanFieldError(formField);
-					}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (clearErrorsOnChange) {
+                        cleanFieldError(formField);
+                    }
 
-					if (hasFormat)
-					{
-						checkFormat((FormattedFormField) formField);
-					}
+                    if (hasFormat) {
+                        checkFormat((FormattedFormField) formField);
+                    }
 
-					if (validateOnChange && view.hasFocus())
-					{
-						validateField(formField);
-					}
-				}
+                    if (validateOnChange && view.hasFocus()) {
+                        validateField(formField);
+                    }
+                }
 
-				@Override
-				public void afterTextChanged(Editable s)
-				{
+                @Override
+                public void afterTextChanged(Editable s) {
 
-				}
-			});
-		}
-	}
+                }
+            });
+        }
+    }
 
-	private void checkFormat(FormattedFormField formField)
-	{
-		View view = formField.getView();
+    private void checkFormat(FormattedFormField formField) {
+        View view = formField.getView();
 
-		String currentViewText = ((TextView) view).getText().toString();
+        String currentViewText = ((TextView) view).getText().toString();
 
-		String currentViewRawText = formField.getRawValue(currentViewText);
+        String currentViewRawText = formField.getRawValue(currentViewText);
 
-		if (currentViewRawText.length() != formField.getRawValue().length())
-		{
-			String formattedValue = formField.getFormattedValue(currentViewRawText);
+        if (currentViewRawText.length() != formField.getRawValue().length()) {
+            String formattedValue = formField.getFormattedValue(currentViewRawText);
 
-			formField.setRawValue(currentViewRawText);
+            formField.setRawValue(currentViewRawText);
 
-			((TextView) view).setText(formattedValue);
+            ((TextView) view).setText(formattedValue);
 
-			if (view instanceof EditText)
-			{
-				((EditText) view).setSelection(((TextView) view).length());
-			}
-		}
+            if (view instanceof EditText) {
+                ((EditText) view).setSelection(((TextView) view).length());
+            }
+        }
 
-	}
+    }
 
-	public MagicForm setListener(ValidatorCallbacks listener)
-	{
-		mListener = listener;
-		return this;
-	}
+    public MagicForm setListener(ValidatorCallbacks listener) {
+        mListener = listener;
+        return this;
+    }
 
 }

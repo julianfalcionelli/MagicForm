@@ -1,26 +1,22 @@
 package julianfalcionelli.magicform.base;
 
-public enum Formatter
-{
-	PHONE("(\\d{0,1})(\\d{0,3})(\\d{0,3})(\\d{0,4})", "+$1 ($2) $3-$4"),
-	SECURITY_NUMBER("(\\d{0,3})(\\d{0,2})(\\d{0,4})", "$1-$2-$3");
+public enum Formatter {
+    PHONE("(\\d{0,1})(\\d{0,3})(\\d{0,3})(\\d{0,4})", "+$1 ($2) $3-$4"),
+    SECURITY_NUMBER("(\\d{0,3})(\\d{0,2})(\\d{0,4})", "$1-$2-$3");
 
-	private String mRegularExp, mReplacement;
+    private String mRegularExp, mReplacement;
 
-	Formatter(String regularExp, String replacement)
-	{
-		mRegularExp = regularExp;
-		mReplacement = replacement;
-	}
+    Formatter(String regularExp, String replacement) {
+        mRegularExp = regularExp;
+        mReplacement = replacement;
+    }
 
-	public String getRegularExp()
-	{
-		return mRegularExp;
-	}
+    public String getRegularExp() {
+        return mRegularExp;
+    }
 
-	public String getReplacement()
-	{
-		return mReplacement;
-	}
+    public String getReplacement() {
+        return mReplacement;
+    }
 
 }
