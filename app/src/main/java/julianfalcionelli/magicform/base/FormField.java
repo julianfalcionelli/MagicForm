@@ -8,72 +8,59 @@ import java.util.List;
 
 import julianfalcionelli.magicform.validation.Validation;
 
-public class FormField
-{
-	private View mView;
-	private List<Validation> mValidations = new ArrayList<>();
+public class FormField {
+    private View mView;
+    private List<Validation> mValidations = new ArrayList<>();
 
-	private ValidationMode mMode;
+    private ValidationMode mMode;
 
-	private boolean mClearErrorsOnChange = true;
+    private boolean mClearErrorsOnChange = true;
 
-	public FormField(View view)
-	{
-		mView = view;
-	}
+    public FormField(View view) {
+        mView = view;
+    }
 
-	public FormField(Activity activity, int viewId)
-	{
-		this(activity.findViewById(viewId));
-	}
+    public FormField(Activity activity, int viewId) {
+        this(activity.findViewById(viewId));
+    }
 
-	public FormField addValidation(Validation validation)
-	{
-		if (!mValidations.contains(validation))
-		{
-			mValidations.add(validation);
-		}
+    public FormField addValidation(Validation validation) {
+        if (!mValidations.contains(validation)) {
+            mValidations.add(validation);
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	public FormField removeValidation(Validation validation)
-	{
-		if (mValidations.contains(validation))
-		{
-			mValidations.remove(validation);
-		}
+    public FormField removeValidation(Validation validation) {
+        if (mValidations.contains(validation)) {
+            mValidations.remove(validation);
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	public List<Validation> getValidations()
-	{
-		return mValidations;
-	}
+    public List<Validation> getValidations() {
+        return mValidations;
+    }
 
-	public View getView()
-	{
-		return mView;
-	}
+    public View getView() {
+        return mView;
+    }
 
-	public void setMode(ValidationMode mode)
-	{
-		mMode = mode;
-	}
+    public void setMode(ValidationMode mode) {
+        mMode = mode;
+    }
 
-	public ValidationMode getMode()
-	{
-		return mMode;
-	}
+    public ValidationMode getMode() {
+        return mMode;
+    }
 
-	public boolean isClearErrorsOnChange()
-	{
-		return mClearErrorsOnChange;
-	}
+    public boolean isClearErrorsOnChange() {
+        return mClearErrorsOnChange;
+    }
 
-	public void setClearErrorsOnChange(boolean clearErrorsOnChange)
-	{
-		mClearErrorsOnChange = clearErrorsOnChange;
-	}
+    public void setClearErrorsOnChange(boolean clearErrorsOnChange) {
+        mClearErrorsOnChange = clearErrorsOnChange;
+    }
 }

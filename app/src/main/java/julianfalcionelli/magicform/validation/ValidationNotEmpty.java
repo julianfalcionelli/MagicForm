@@ -1,9 +1,7 @@
 package julianfalcionelli.magicform.validation;
 
-public class ValidationNotEmpty extends ValidationMinLength
-{
-	public ValidationNotEmpty()
-	{
-		super(1);
-	}
+public class ValidationNotEmpty extends ValidationMinLength {
+    public ValidationNotEmpty() {
+        super(1);
+    }
 }
