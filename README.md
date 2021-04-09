@@ -9,7 +9,7 @@ Setup
 
 ```groovy
 dependencies {
-    implementation 'julianfalcionelli:MagicForm:1.5'
+    implementation 'io.github.julianfalcionelli:MagicForm:1.5.1'
 }
 ```
 
@@ -110,13 +110,6 @@ MagicForm mMagicForm = new MagicForm(ValidationMode.ON_CONTENT_CHANGE)
 				});
 ```
 
-
-
-Coming soon
------
-
-- Formatters: Add formats to text fields (eg for phones, credit cards, etc ...)
-- New mode: Validate fields every x seconds.
 
 License
 -----
